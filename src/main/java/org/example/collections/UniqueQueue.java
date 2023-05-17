@@ -6,12 +6,15 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+/**
+ * Queue implementation based on LinkedHashSet. Contains only unique elements. Thead-unsafe
+ */
 public class UniqueQueue<T> extends AbstractQueue<T> {
     private final Set<T> set = new LinkedHashSet<>();
 
     @Override
     public Iterator<T> iterator() {
-        return set.iterator(); // Should synchronize both collections
+        return set.iterator();
     }
 
     @Override
