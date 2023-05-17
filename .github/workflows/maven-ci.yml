@@ -2,6 +2,12 @@ name: Java Maven CI
 
 on: [ push ]
 
+permissions:
+  statuses: write
+  checks: write
+  contents: write
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
