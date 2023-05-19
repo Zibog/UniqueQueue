@@ -1,13 +1,15 @@
 package org.example.collections;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UniqueQueueTest {
     @Test
@@ -67,7 +69,7 @@ public class UniqueQueueTest {
 
         Assertions.assertNull(queue.peek());
         Assertions.assertTrue(queue.offer(66));
-        Assertions.assertEquals(66, queue.peek().intValue());
+        Assertions.assertEquals(66, Objects.requireNonNull(queue.peek()).intValue());
         Assertions.assertEquals(1, queue.size());
     }
 
@@ -75,7 +77,7 @@ public class UniqueQueueTest {
     public void testRemove() {
         Queue<Integer> queue = new UniqueQueue<>();
 
-        Assert.assertThrows(NoSuchElementException.class, queue::remove);
+        Assertions.assertThrows(NoSuchElementException.class, queue::remove);
         Assertions.assertTrue(queue.offer(3));
         Assertions.assertTrue(queue.offer(1));
         Assertions.assertTrue(queue.offer(2));
@@ -90,10 +92,52 @@ public class UniqueQueueTest {
     public void testElement() {
         Queue<Integer> queue = new UniqueQueue<>();
 
-        Assert.assertThrows(NoSuchElementException.class, queue::element);
+        Assertions.assertThrows(NoSuchElementException.class, queue::element);
         Assertions.assertTrue(queue.offer(4));
         Assertions.assertTrue(queue.offer(1));
         Assertions.assertEquals(4, queue.element().intValue());
         Assertions.assertEquals(2, queue.size());
+    }
+
+    @Test
+    public void testTake() throws InterruptedException {
+        UniqueQueue<Integer> queue = new UniqueQueue<>();
+
+        Assertions.assertTrue(queue.offer(3));
+        Assertions.assertEquals(3, queue.take());
+        Assertions.assertTrue(queue.isEmpty());
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            try {
+                Assertions.assertEquals(1, queue.take());
+            } catch (InterruptedException e) {
+                Assertions.fail(e);
+            }
+        });
+        Thread.sleep(100);
+        Assertions.assertTrue(queue.offer(1));
+        Assertions.assertTrue(queue.isEmpty());
+    }
+
+    @Test
+    public void testPeekWaiting() throws InterruptedException {
+        UniqueQueue<Integer> queue = new UniqueQueue<>();
+
+        Assertions.assertTrue(queue.offer(3));
+        Assertions.assertEquals(3, queue.take());
+        Assertions.assertTrue(queue.isEmpty());
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            try {
+                Assertions.assertEquals(1, queue.peekWaiting());
+            } catch (InterruptedException e) {
+                Assertions.fail(e);
+            }
+        });
+        Thread.sleep(100);
+        Assertions.assertTrue(queue.offer(1));
+        Assertions.assertFalse(queue.isEmpty());
     }
 }

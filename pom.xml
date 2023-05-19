@@ -14,6 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
         <junit.jupiter.version>5.9.3</junit.jupiter.version>
+        <jmh-core.version>1.35</jmh-core.version>
+        <jmh-generator.version>1.35</jmh-generator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -27,6 +29,16 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>${jmh-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>${jmh-generator.version}</version>
         </dependency>
     </dependencies>
 
